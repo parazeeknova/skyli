@@ -16,9 +16,14 @@
 
 ### About 🚀
 
-**SKYLI** is a comprehensive development environment platform designed to provide developers with remote VS Code workspaces accessible from anywhere. Built on modern cloud-native technologies, SKYLI offers both **cloud-hosted and local deployment options**, enabling developers to maintain consistent, powerful development environments regardless of their physical device or location.
+**SKYLI** is a comprehensive development environment platform designed to provide developers with remote VS Code workspaces accessible from anywhere. Built on modern cloud-native technologies, SKYLI offers both **cloud-hosted and local deployment options**, enabling developers to maintain consistent, powerful development environments regardless of their physical device or location. 
 
-This report outlines the detailed technical architecture, implementation strategy, and deployment models for SKYLI, providing a comprehensive blueprint for development and operation.
+By offering both cloud-hosted and local deployment options, SKYLI provides developers with consistent, powerful development environments accessible from anywhere, enhancing productivity and collaboration while simplifying environment management.
+
+This readme outlines the detailed technical architecture, implementation strategy, and deployment models for SKYLI, providing a comprehensive blueprint for development and operation.
+
+> [!NOTE]
+> Subject to change in development, I'll build local services first for self-host for now. 
 
 ### Technology Stack Overview ⚙️
 #### Frontend Technologies 
