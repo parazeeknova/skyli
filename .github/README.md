@@ -1,14 +1,17 @@
-## SKYLI
-
-#### *Your Workspace, Everywhere - The Cloud-Native Development Environment Platform similar to replit*
+<div align="center">
+  
+  ## SKYLI 🪽
+  #### *Your Workspace, Everywhere - The Cloud-Native Development Environment Platform*
+</div>
 
 <div align="center">
 
-  <a href="#"><kbd> <br> About <br> </kbd></a>&ensp;&ensp;
-  <a href="#"><kbd> <br> Stack <br> </kbd></a>&ensp;&ensp;
-  <a href="#"><kbd> <br> Architecture <br> </kbd></a>&ensp;&ensp;
-  <a href="#"><kbd> <br> Overview <br> </kbd></a>&ensp;&ensp;
-  <a href="#"><kbd> <br> Conclusion <br> </kbd></a>
+  <br>
+  <a href="#about-"><kbd> <br> About <br> </kbd></a>&ensp;&ensp;
+  <a href="#technology-stack-overview-%EF%B8%8F"><kbd> <br> Stack <br> </kbd></a>&ensp;&ensp;
+  <a href="#system-architecture-%EF%B8%8F"><kbd> <br> Architecture <br> </kbd></a>&ensp;&ensp;
+  <a href="#component-interactions"><kbd> <br> Overview <br> </kbd></a>&ensp;&ensp;
+  <a href="#conclusion-%EF%B8%8F"><kbd> <br> Conclusion <br> </kbd></a>
 </div>
 
 ### About 🚀
@@ -17,9 +20,8 @@
 
 This report outlines the detailed technical architecture, implementation strategy, and deployment models for SKYLI, providing a comprehensive blueprint for development and operation.
 
-### Technology Stack Overview
-
-#### Frontend Technologies
+### Technology Stack Overview ⚙️
+#### Frontend Technologies 
 
 | Technology         | Purpose                      | Implementation Details                                                                   |
 | ------------------ | ---------------------------- | ---------------------------------------------------------------------------------------- |
@@ -57,9 +59,9 @@ This report outlines the detailed technical architecture, implementation strateg
 | **Lens**           | Kubernetes management | Visual interface for monitoring and managing Kubernetes clusters |
 | **K9s**            | Kubernetes CLI        | Terminal-based management of Kubernetes resources                |
 
-### System Architecture
+### System Architecture 🛰️
+#### SKYLI Component Relationships
 
-#### High level overview
 ```mermaid
 flowchart LR
     subgraph Frontend
@@ -152,7 +154,8 @@ flowchart LR
     WorkspaceService --> K8s
     WorkspaceService --> Compose
 ```
-#### User Flow Diagram
+#### SKYLI Data Flow Diagram
+
 ```mermaid
 flowchart TD
     User([User])
@@ -212,11 +215,11 @@ flowchart TD
     ClientApplications -->|Direct Connection| VSCodeServer
 ```
 
-#### Component Interactions
+#### Component Interactions 
 
 1. **User Authentication Flow**:
    - User authenticates via the SKYLI web interface
-   - Better Auth handles authentication with JWT tokens
+   - Better Auth handles authentication
    - User session established with Redis for state management
    - PostgreSQL stores persistent user data and preferences
 
@@ -233,7 +236,7 @@ flowchart TD
    - VS Code server instances run as containers on user's machine
    - Local proxy provides web access to VS Code instances
 
-### Master Architecture Diagram
+### Master Architecture Diagram 📟
 
 ```mermaid
 flowchart TB
@@ -411,8 +414,7 @@ flowchart TB
     class GitRepo,GithubActions,Linting,Testing,DockerBuild,DockerRegistry,K8sManifests,DevEnvironment,StagingEnvironment,ProductionEnvironment,BackupManager devops
 ```
 
-### Conclusion
+### Conclusion 🏔️
 
 The SKYLI platform represents a comprehensive solution for cloud-native development environments, combining the power of VS Code with the flexibility of containerized deployments. With both cloud-hosted and local options, SKYLI provides developers with consistent, powerful development environments accessible from anywhere.
-
 The technology stack and architecture outlined in this report provide a solid foundation for building a scalable, secure, and feature-rich platform that addresses the evolving needs of modern software development teams.
