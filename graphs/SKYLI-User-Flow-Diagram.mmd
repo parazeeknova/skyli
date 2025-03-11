@@ -1,0 +1,30 @@
+stateDiagram-v2
+    [*] --> LandingPage: User visits site
+    
+    LandingPage --> SignUp: New user
+    LandingPage --> SignIn: Existing user
+    
+    SignUp --> Dashboard: Registration successful
+    SignIn --> Dashboard: Authentication successful
+    
+    Dashboard --> WorkspaceList: View workspaces
+    Dashboard --> CreateWorkspace: Create new workspace
+    Dashboard --> Settings: Configure account
+    Dashboard --> Billing: Manage subscription
+    
+    CreateWorkspace --> ConfigureWorkspace: Set workspace parameters
+    ConfigureWorkspace --> ProvisioningWorkspace: Submit configuration
+    
+    ProvisioningWorkspace --> RunningWorkspace: Provisioning complete
+    
+    RunningWorkspace --> VSCodeInterface: Access workspace
+    RunningWorkspace --> StoppedWorkspace: Stop workspace
+    StoppedWorkspace --> RunningWorkspace: Start workspace
+    
+    VSCodeInterface --> Terminal: Access terminal
+    VSCodeInterface --> CodeEditor: Edit files
+    VSCodeInterface --> Extensions: Install extensions
+    
+    Extensions --> VSCodeInterface: Extension installed
+    
+    VSCodeInterface --> Dashboard: Return to dashboard

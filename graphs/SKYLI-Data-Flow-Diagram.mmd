@@ -1,0 +1,56 @@
+flowchart TD
+    User([User])
+    
+    subgraph ClientApplications
+        WebApp[Web Application]
+        ElectronApp[Electron Application]
+    end
+    
+    subgraph APIGateway
+        GraphQL[GraphQL Endpoint]
+        AuthAPI[Authentication API]
+    end
+    
+    subgraph Services
+        UserSvc[User Service]
+        WorkspaceSvc[Workspace Service]
+        BillingSvc[Billing Service]
+        AnalyticsSvc[Analytics Service]
+    end
+    
+    subgraph DataStores
+        PostgreSQL[(PostgreSQL)]
+        Redis[(Redis)]
+    end
+    
+    subgraph WorkspaceRuntime
+        K8s[Kubernetes Controller]
+        DockerCompose[Docker Compose Manager]
+        VSCodeServer[VS Code Server Instances]
+    end
+    
+    User -->|Interacts with| ClientApplications
+    ClientApplications -->|API Requests| GraphQL
+    ClientApplications -->|Authentication| AuthAPI
+    
+    GraphQL -->|User Requests| UserSvc
+    GraphQL -->|Workspace Operations| WorkspaceSvc
+    GraphQL -->|Billing Requests| BillingSvc
+    ClientApplications -->|Usage Metrics| AnalyticsSvc
+    
+    UserSvc -->|User Data| PostgreSQL
+    WorkspaceSvc -->|Workspace Metadata| PostgreSQL
+    BillingSvc -->|Billing Records| PostgreSQL
+    AnalyticsSvc -->|Analytics Data| PostgreSQL
+    
+    AuthAPI -->|Session Management| Redis
+    WorkspaceSvc -->|Workspace Status| Redis
+    
+    WorkspaceSvc -->|Cloud Provisioning| K8s
+    WorkspaceSvc -->|Local Provisioning| DockerCompose
+    
+    K8s -->|Manages| VSCodeServer
+    DockerCompose -->|Manages| VSCodeServer
+    
+    VSCodeServer -->|Status Updates| WorkspaceSvc
+    ClientApplications -->|Direct Connection| VSCodeServer

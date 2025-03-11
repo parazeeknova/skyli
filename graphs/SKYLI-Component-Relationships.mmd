@@ -1,0 +1,90 @@
+flowchart LR
+    subgraph Frontend
+        WebUI[Web Interface]
+        ElectronApp[Electron App]
+        
+        subgraph UIComponents
+            Dashboard[Dashboard]
+            WorkspaceManager[Workspace Manager]
+            Settings[Settings Panel]
+            Terminal[Terminal Interface]
+        end
+        
+        WebUI --> Dashboard
+        WebUI --> WorkspaceManager
+        WebUI --> Settings
+        WebUI --> Terminal
+        
+        ElectronApp --> Dashboard
+        ElectronApp --> WorkspaceManager
+        ElectronApp --> Settings
+        ElectronApp --> Terminal
+    end
+    
+    subgraph BackendServices
+        API[GraphQL API]
+        Auth[Authentication]
+        
+        subgraph CoreLogic
+            UserService[User Service]
+            WorkspaceService[Workspace Service]
+            BillingService[Billing Service]
+        end
+        
+        API --> Auth
+        API --> UserService
+        API --> WorkspaceService
+        API --> BillingService
+    end
+    
+    subgraph DataStorage
+        SQL[(PostgreSQL)]
+        Cache[(Redis)]
+        
+        subgraph DataModels
+            Users[Users]
+            Workspaces[Workspaces]
+            Billing[Billing Records]
+            Usage[Usage Metrics]
+        end
+        
+        SQL --> Users
+        SQL --> Workspaces
+        SQL --> Billing
+        SQL --> Usage
+        
+        Cache --> Sessions[Sessions]
+        Cache --> Realtime[Realtime Updates]
+    end
+    
+    subgraph RuntimeEnvironments
+        K8s[Kubernetes]
+        Compose[Docker Compose]
+        
+        subgraph K8sResources
+            Pods[VS Code Pods]
+            Services[K8s Services]
+            Ingress[NGINX Ingress]
+            Storage[Persistent Volumes]
+        end
+        
+        K8s --> Pods
+        K8s --> Services
+        K8s --> Ingress
+        K8s --> Storage
+        
+        Compose --> Containers[Local Containers]
+        Compose --> LocalVolumes[Local Volumes]
+    end
+    
+    Frontend --> API
+    
+    UserService --> SQL
+    WorkspaceService --> SQL
+    BillingService --> SQL
+    
+    Auth --> Cache
+    API --> Cache
+    
+    WorkspaceService --> K8s
+    WorkspaceService --> Compose

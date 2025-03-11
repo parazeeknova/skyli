@@ -1,0 +1,173 @@
+flowchart TB
+    %% User Entry Points
+    User([User]) -->|Accesses| WebUI[Web Interface\nNext.js + Tailwind + ShadcnUI]
+    User -->|Installs| ElectronApp[Electron App\nCross-platform]
+    Developer([Developer]) -->|Commits Code| GitRepo[GitHub Repository]
+    
+    %% Authentication Flow
+    WebUI -->|Auth Request| AuthService{Authentication Service\nBetter Auth}
+    ElectronApp -->|Auth Request| AuthService
+    AuthService -->|OAuth| GitProviders[GitHub/GitLab OAuth]
+    AuthService -->|Username/Password| CredentialVerify[Credential Verification]
+    AuthService -->|2FA Verification| TwoFactor[2FA Service]
+    AuthService -->|Issues| JWTService[JWT Token Service]
+    JWTService -->|Stores| RedisSession[(Redis Session Store)]
+    AuthService -->|User Records| UserDB[(PostgreSQL\nUser Tables)]
+    
+    %% Frontend Components
+    WebUI --> Dashboard[Dashboard View]
+    WebUI --> WorkspaceManagement[Workspace Management]
+    WebUI --> SettingsPanel[Settings & Preferences]
+    WebUI --> BillingUI[Billing & Subscription UI]
+    WebUI --> AdminPanel[Admin Panel]
+    ElectronApp --> LocalDashboard[Local Dashboard]
+    ElectronApp --> LocalWorkspaceManagement[Local Workspace Management]
+    ElectronApp -->|Controls| DockerEngineAPI[Docker Engine API]
+    
+    %% API Gateway & GraphQL
+    WebUI -->|API Requests| APIGateway{GraphQL API Gateway}
+    ElectronApp -->|API Requests| APIGateway
+    APIGateway -->|Validates| JWTService
+    
+    %% Core Services
+    APIGateway -->|User Operations| UserService[User Service]
+    APIGateway -->|Workspace Operations| WorkspaceService[Workspace Service]
+    APIGateway -->|Billing Operations| BillingService[Billing Service]
+    APIGateway -->|Template Operations| TemplateService[Template Service]
+    APIGateway -->|Analytics Queries| AnalyticsService[Analytics Service]
+    APIGateway -->|Team Operations| TeamService[Team & Organization Service]
+    
+    %% Database Interactions
+    UserService -->|CRUD Operations| UserDB
+    WorkspaceService -->|Metadata Storage| WorkspaceDB[(PostgreSQL\nWorkspace Tables)]
+    BillingService -->|Subscription Data| BillingDB[(PostgreSQL\nBilling Tables)]
+    TeamService -->|Team Data| TeamDB[(PostgreSQL\nTeam Tables)]
+    TemplateService -->|Template Storage| TemplateDB[(PostgreSQL\nTemplate Tables)]
+    AnalyticsService -->|Usage Data| AnalyticsDB[(PostgreSQL\nAnalytics Tables)]
+    
+    %% Redis Cache
+    UserService -->|Cache User Data| RedisCache[(Redis Cache)]
+    WorkspaceService -->|Cache Status| RedisCache
+    WorkspaceService -->|Pub/Sub Events| RedisPubSub[Redis Pub/Sub]
+    RedisPubSub -->|Status Updates| WebUI
+    RedisPubSub -->|Status Updates| ElectronApp
+    
+    %% Workspace Runtime - Kubernetes
+    WorkspaceService -->|Cloud Provisioning| K8sController[Kubernetes Controller]
+    K8sController -->|Creates| K8sResources{Kubernetes Resources}
+    K8sResources -->|Deploys| Pods[VS Code Server Pods]
+    K8sResources -->|Creates| K8sServices[Kubernetes Services]
+    K8sResources -->|Configures| Ingress[NGINX Ingress]
+    K8sResources -->|Allocates| PVCs[Persistent Volume Claims]
+    K8sResources -->|Applies| NetworkPolicies[Network Policies]
+    K8sResources -->|Sets| ResourceQuotas[Resource Quotas]
+    Pods -->|Run| VSCodeContainer[VS Code Server Container]
+    Ingress -->|Routes to| K8sServices
+    K8sServices -->|Expose| Pods
+    WebUI -->|Direct Connection| VSCodeContainer
+    VSCodeContainer -->|Git Operations| GitProviders
+    VSCodeContainer -->|File Access| PVCs
+    
+    %% Workspace Runtime - Docker Compose
+    WorkspaceService -->|Local Provisioning| ComposeManager[Docker Compose Manager]
+    ComposeManager -->|Manages| ComposeConfig[Docker Compose Config]
+    ComposeConfig -->|Defines| LocalContainers[Local VS Code Containers]
+    ComposeConfig -->|Maps| LocalVolumes[Local Volumes]
+    ComposeConfig -->|Sets| LocalNetworking[Local Network Config]
+    DockerEngineAPI -->|Controls| LocalContainers
+    
+    %% Billing and Payments
+    BillingService -->|Processes Payments| StripeAPI[Stripe API]
+    BillingService -->|Tracks| UsageMetering[Resource Usage Metering]
+    StripeAPI -->|Payment Methods| PaymentDB[(Stripe Payment Tokens)]
+    BillingService -->|Subscription Plans| SubscriptionDB[(Plan Definitions)]
+    WorkspaceService -->|Usage Data| UsageMetering
+    UsageMetering -->|Records| UsageDB[(Usage Records)]
+    BillingService -->|Generates| Invoices[Invoice Generation]
+    Invoices -->|Sends| EmailService[Email Service]
+    
+    %% CI/CD Pipeline
+    GitRepo -->|Triggers| GithubActions[GitHub Actions CI/CD]
+    GithubActions -->|Runs| Linting[Code Linting]
+    GithubActions -->|Executes| Testing[Automated Tests]
+    GithubActions -->|Builds| DockerBuild[Docker Image Build]
+    DockerBuild -->|Pushes to| DockerRegistry[Docker Registry]
+    GithubActions -->|Updates| K8sManifests[Kubernetes Manifests]
+    K8sManifests -->|Applied to| DevEnvironment[Development Environment]
+    K8sManifests -->|With Approval| StagingEnvironment[Staging Environment]
+    K8sManifests -->|With Approval| ProductionEnvironment[Production Environment]
+    
+    %% Monitoring and Observability
+    WebUI -->|User Analytics| UmamiAnalytics[Umami Analytics]
+    WebUI -->|Error Tracking| BugsinkClient[Bugsink Client]
+    APIGateway -->|API Metrics| APIMetrics[API Metrics Collection]
+    K8sController -->|Pod Metrics| PodMetrics[Pod Metrics Collection]
+    WorkspaceService -->|Log Events| LogCollection[Centralized Logging]
+    UserService -->|Log Events| LogCollection
+    BillingService -->|Log Events| LogCollection
+    APIGateway -->|Log Events| LogCollection
+    BugsinkClient -->|Reports| BugsinkServer[Bugsink Server]
+    UmamiAnalytics -->|Stores| AnalyticsDB
+    LogCollection -->|Stores| LogStorage[(Log Storage)]
+    APIMetrics -->|Alerts| AlertManager[Alert Manager]
+    PodMetrics -->|Alerts| AlertManager
+    AlertManager -->|Notifies| OnCallSystem[On-Call System]
+    
+    %% Backup and Disaster Recovery
+    BackupManager[Backup Service] -->|Snapshots| WorkspaceDB
+    BackupManager -->|Snapshots| UserDB
+    BackupManager -->|Snapshots| BillingDB
+    BackupManager -->|Volume Backups| PVCs
+    BackupManager -->|Stores| BackupStorage[(Backup Storage)]
+    
+    %% User Flows
+    subgraph UserFlows [User Flows]
+        direction TB
+        uf1[Sign Up Flow] --> uf2[Create Workspace]
+        uf2 --> uf3[Access VS Code]
+        uf3 --> uf4[Install Extensions]
+        uf3 --> uf5[Terminal Access]
+        uf3 --> uf6[Git Integration]
+        uf4 --> uf7[Develop Code]
+        uf5 --> uf7
+        uf6 --> uf7
+        uf2 --> uf8[Save Template]
+        uf8 --> uf9[Share Template]
+        uf1 --> uf10[Create Team]
+        uf10 --> uf11[Invite Members]
+        uf11 --> uf12[Manage Permissions]
+        uf1 --> uf13[Subscribe]
+        uf13 --> uf14[Payment]
+        uf14 --> uf15[Access Premium Features]
+    end
+    
+    %% Security Components
+    SecurityScanner[Security Scanner] -->|Scans| GitRepo
+    SecurityScanner -->|Scans| DockerRegistry
+    SecurityScanner -->|Reports| SecurityDB[(Security Findings)]
+    Firewall[Web Application Firewall] -->|Protects| WebUI
+    Firewall -->|Protects| APIGateway
+    
+    %% Data Flow
+    WebUI -->|WebSocket| RealtimeService[Realtime Service]
+    RealtimeService -->|Subscribes to| RedisPubSub
+    VPNService[VPN Service] -->|Secure Access| InternalServices[Internal Services]
+    
+    %% Legend
+    classDef userEndpoint fill:#f9f,stroke:#333,stroke-width:2px
+    classDef frontend fill:#bbf,stroke:#333,stroke-width:1px
+    classDef backend fill:#bfb,stroke:#333,stroke-width:1px
+    classDef database fill:#fbb,stroke:#333,stroke-width:1px
+    classDef kubernetes fill:#fbf,stroke:#333,stroke-width:1px
+    classDef monitoring fill:#bff,stroke:#333,stroke-width:1px
+    classDef security fill:#fdb,stroke:#333,stroke-width:1px
+    classDef devops fill:#dfb,stroke:#333,stroke-width:1px
+    
+    class User,Developer userEndpoint
+    class WebUI,ElectronApp,Dashboard,WorkspaceManagement,SettingsPanel,BillingUI,AdminPanel,LocalDashboard,LocalWorkspaceManagement frontend
+    class APIGateway,UserService,WorkspaceService,BillingService,TemplateService,AnalyticsService,TeamService,AuthService,JWTService,CredentialVerify,TwoFactor backend
+    class UserDB,WorkspaceDB,BillingDB,TeamDB,TemplateDB,AnalyticsDB,RedisCache,RedisSession,RedisPubSub,BackupStorage,LogStorage,SecurityDB,UsageDB,SubscriptionDB,PaymentDB database
+    class K8sController,K8sResources,Pods,K8sServices,Ingress,PVCs,NetworkPolicies,ResourceQuotas,VSCodeContainer kubernetes
+    class UmamiAnalytics,BugsinkClient,BugsinkServer,APIMetrics,PodMetrics,LogCollection,AlertManager,OnCallSystem monitoring
+    class SecurityScanner,Firewall,VPNService security
+    class GitRepo,GithubActions,Linting,Testing,DockerBuild,DockerRegistry,K8sManifests,DevEnvironment,StagingEnvironment,ProductionEnvironment,BackupManager devops
