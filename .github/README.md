@@ -1,7 +1,7 @@
 <div align="center">
   
   ## SKYLI 🪽
-  #### *Your Workspace, Everywhere - The Cloud-Native Development Environment Platform*
+  #### *Basically Docker but for your entire development environment*
 </div>
 
 <div align="center">
@@ -16,14 +16,31 @@
 
 ### About 🚀
 
-**SKYLI** is a comprehensive development environment platform designed to provide developers with remote VS Code workspaces accessible from anywhere. Built on modern cloud-native technologies, SKYLI offers both **cloud-hosted and local deployment options**, enabling developers to maintain consistent, powerful development environments regardless of their physical device or location. 
-
-By offering both cloud-hosted and local deployment options, SKYLI provides developers with consistent, powerful development environments accessible from anywhere, enhancing productivity and collaboration while simplifying environment management.
+**SKYLI** is a comprehensive development environment platform designed to provide developers with remote VS Code workspaces accessible from anywhere. Built on modern cloud-native technologies, SKYLI offers both **cloud-hosted and local deployment options**, enabling developers to maintain consistent, powerful development environments regardless of their physical device or location.
 
 This readme outlines the detailed technical architecture, implementation strategy, and deployment models for SKYLI, providing a comprehensive blueprint for development and operation.
 
 > [!NOTE]
-> Subject to change in development, I'll build local services first for self-host for now. 
+> Subject to change in development, I'll build local services first for self-host for now.
+
+#### Problem Statement
+Developers face several challenges with traditional local development setups:
+
+- *Environment inconsistency* - "Works on my machine" issues between team members
+- *Setup complexity* - Hours spent configuring development environments for each project
+- *Resource limitations* - Local hardware constraints for resource-intensive projects
+- *Mobility restrictions* - Being tied to a specific machine with the proper setup
+- *Collaboration barriers* - Difficulty sharing working environments with teammates
+
+#### Detailed Description
+**SKYLI** will function similarly to platforms like Replit and DigitalOcean but with a specific focus on providing VS Code Server environments. Here's how it works:
+
+##### Core Architecture
+
+- **Containerized VS Code Server:** Each workspace runs the VS Code Server Docker image in an isolated container we didn't want to reinvent the wheel
+- **Custom Domain Access:** Projects accessible via unique subdomains (e.g., project-name.skyli.dev)
+- **Persistent Storage:** Project files and configurations retained between sessions until closed
+- **Environment Isolation:** Each project gets its own container with independent dependencies
 
 ### Technology Stack Overview ⚙️
 #### Frontend Technologies 
